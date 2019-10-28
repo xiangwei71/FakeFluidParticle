@@ -40,7 +40,7 @@ function Particle(index) {
 
         // reset
         if (this.v.Len() < particle_small_r) {
-            pool.reset_p(this.index);
+            pool.reset_P(this.index);
         }
     }
 

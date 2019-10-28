@@ -33,7 +33,7 @@ function canvas_onmousemove(event) {
 
     // create particle by now_pos and diff
     diff.set(now_pos.x - pre_pos.x, now_pos.y - pre_pos.y);
-    var P = particle_pool.get_p();
+    var P = particle_pool.get_P();
     if (P != null) { //有空位
         P.copy(now_pos, diff.multiply(particle_v_boost))
     }
@@ -52,7 +52,7 @@ var particle_pool;
 var v_visualize = new Vector(0, 0);
 window.onload = () => {
 
-    particle_pool = new ParticlePool();
+    particle_pool = new ParticlePool(3000);
     render = new Render(canvas);
 
     var pre_time = new Date().getTime();

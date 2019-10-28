@@ -1,61 +1,30 @@
-var max_count = 3000;
 
-function ParticlePool() {
-    this.particles = new Array(max_count);
-    this.index = 0;
-    this.active_count = 0;
-    for (var i = 0; i < max_count; ++i)
-        this.particles[i] = new Particle(i);
+function ParticlePool(max_count) {
+    this.pool = new Pool(max_count, (index) => { return new Particle(index); });
 
-    this.get_p = () => {
-        var counter = 0;
-        while (true) {
-            // 沒有空的
-            if (counter == (max_count - this.active_count))
-                break;
-
-            var P = this.particles[this.index];
-            this.index = (this.index + 1) % max_count;
-            ++counter;
-            if (P.active == false) {
-                P.active = true;
-                this.active_count++;
-                return P;
-            }
-        }
-        return null;
+    this.get_P = () => {
+        return this.pool.get();
     }
 
-    this.reset_p = (index) => {
-        var P = this.particles[index];
-        P.active = false;
-        P.pos.copy(particel_init_pos);
-
-        --this.active_count;
+    this.reset_P = (index) => {
+        var E = this.pool.reset(index);
+        E.pos.copy(particel_init_pos);
     }
 
     this.draw = (render) => {
-        for (var i = 0; i < this.particles.length; ++i) {
-            var P = this.particles[i];
-            if (!P.active)
-                continue;
-
+        this.pool.foreach((P) => {
             P.v.normalized(v_visualize);
             render.draw_vector(P.pos, v_visualize);
             // render.draw_vector(P.pos, P.v);
-        }
+        });
     }
 
     this.do_particle_update = (dt) => {
-        for (var i = 0; i < this.particles.length; ++i) {
-            var P = this.particles[i];
-
-            if (!P.active)
-                continue;
-
+        this.pool.foreach((P) => {
             P.update(dt, this);
             P.boundary_condition(0, canvas.width - 1, 0, canvas.height - 1);
-        }
-        console.log(this.active_count);
+        });
+
+        console.log(this.pool.active_count);
     }
 }
