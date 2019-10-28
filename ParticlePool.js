@@ -10,6 +10,10 @@ function ParticlePool() {
     this.get_p = () => {
         var counter = 0;
         while (true) {
+            // 沒有空的
+            if (counter == (max_count - this.active_count))
+                break;
+
             var P = this.particles[this.index];
             this.index = (this.index + 1) % max_count;
             ++counter;
@@ -18,11 +22,8 @@ function ParticlePool() {
                 this.active_count++;
                 return P;
             }
-
-            // 沒有空的
-            if (counter == (max_count - this.active_count))
-                break;
         }
+        return null;
     }
 
     this.reset_p = (index) => {

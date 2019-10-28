@@ -34,7 +34,9 @@ function canvas_onmousemove(event) {
     // create particle by now_pos and diff
     diff.set(now_pos.x - pre_pos.x, now_pos.y - pre_pos.y);
     var P = particle_pool.get_p();
-    P.copy(now_pos, diff.multiply(particle_v_boost))
+    if (P != null) { //有空位
+        P.copy(now_pos, diff.multiply(particle_v_boost))
+    }
 
     // rest pre_pos
     pre_pos.set(now_pos.x, now_pos.y);
