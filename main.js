@@ -80,7 +80,7 @@ window.onload = () => {
         for (var i = 0; i < list.length; ++i)
             render.draw_point(list[i], 2);
 
-        kd_tree.draw(render);
+        kd_tree.draw(render, canvas.width, canvas.height);
 
         window.requestAnimationFrame(update);
     };

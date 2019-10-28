@@ -53,23 +53,29 @@ function KDTree() {
         return node;
     }
 
-    this.draw_node = (node, render) => {
+    this.draw_node = (node, render, min_x, max_x, min_y, max_y) => {
         if (node.x_split) {
             var x = node.get_value();
-            render.draw_vector(new Vector(x, 10), new Vector(0, 600));
+            render.draw_vector(new Vector(x, min_y), new Vector(0, max_y));
+
+            if (node.left_child)
+                this.draw_node(node.left_child, render, min_x, x, min_y, max_y);
+
+            if (node.right_child)
+                this.draw_node(node.right_child, render, x, max_x, min_y, max_y);
         } else {
             var y = node.get_value();
-            render.draw_vector(new Vector(10, y), new Vector(600, 0));
+            render.draw_vector(new Vector(min_x, y), new Vector(max_x, 0));
+
+            if (node.left_child)
+                this.draw_node(node.left_child, render, min_x, max_x, min_y, y);
+
+            if (node.right_child)
+                this.draw_node(node.right_child, render, min_x, max_x, y, max_y);
         }
-
-        if (node.left_child)
-            this.draw_node(node.left_child, render);
-
-        if (node.right_child)
-            this.draw_node(node.right_child, render);
     }
 
-    this.draw = (render) => {
-        this.draw_node(this.node, render);
+    this.draw = (render, w, h) => {
+        this.draw_node(this.node, render, 0, w, 0, h);
     }
 }
