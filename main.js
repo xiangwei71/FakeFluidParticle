@@ -49,7 +49,9 @@ function do_particle_update(dt) {
     for (var i = 0; i < particles.length; ++i) {
         var P = particles[i];
         P.update(10 * dt);
+        P.boundary_condition(0, canvas.width - 1, 0, canvas.height - 1);
     }
+    console.log(particles.length);
 }
 
 window.onload = () => {
