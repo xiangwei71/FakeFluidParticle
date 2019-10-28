@@ -1,12 +1,15 @@
+var particle_fade_rate = 0.1;
+var particle_v_boost = 5;
+
 function Particle(pos, v) {
     this.pos = new Vector(pos.x, pos.y);
     this.v = new Vector(v.x, v.y);
-    this.fade_rate = 0.25;
+
 
     this.update = (dt) => {
         vector_add(this.pos, this.v.multiply(dt), this.pos);
 
-        var active_rate = (1 - this.fade_rate * dt);
+        var active_rate = (1 - particle_fade_rate * dt);
         // drag
         this.v.x = this.v.x * active_rate;
         this.v.y = this.v.y * active_rate;

@@ -22,6 +22,7 @@ function canvas_onmouseup(event) {
     moving = false;
 }
 
+
 function canvas_onmousemove(event) {
     if (!moving)
         return;
@@ -32,7 +33,7 @@ function canvas_onmousemove(event) {
 
     // create particle by now_pos and diff
     diff.set(now_pos.x - pre_pos.x, now_pos.y - pre_pos.y);
-    var P = new Particle(now_pos, diff);
+    var P = new Particle(now_pos, diff.multiply(particle_v_boost));
     particles.push(P);
 
     // rest pre_pos
@@ -54,6 +55,7 @@ function do_particle_update(dt) {
     console.log(particles.length);
 }
 
+var v_visualize = new Vector(0, 0);
 window.onload = () => {
     render = new Render(canvas);
 
@@ -74,6 +76,8 @@ window.onload = () => {
         do_particle_update(dt);
         for (var i = 0; i < particles.length; ++i) {
             var P = particles[i];
+            // P.v.normalized(v_visualize);
+            // render.draw_vector(P.pos, v_visualize);
             render.draw_vector(P.pos, P.v);
         }
 

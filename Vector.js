@@ -1,3 +1,5 @@
+var Zero = new Vector(0, 0);
+
 function Vector(x, y) {
     this.x = x;
     this.y = y;
@@ -11,13 +13,13 @@ function Vector(x, y) {
         return new Vector(s * this.x, s * this.y);
     }
 
-    this.normalized = () => {
+    this.normalized = (out) => {
         var r = Math.sqrt(this.x * this.x + this.y * this.y);
-        if (r == 0)
-            return;
+        if (r == 0) {
+            out.set(Zero.x, Zero.y);
+        }
 
-        this.x = this.x / r;
-        this.y = this.y / r;
+        out.set(this.x / r, this.y / r);
     }
 }
 
