@@ -37,13 +37,12 @@ function ParticlePool() {
     this.draw = (render) => {
         for (var i = 0; i < this.particles.length; ++i) {
             var P = this.particles[i];
-            // P.v.normalized(v_visualize);
-            // render.draw_vector(P.pos, v_visualize);
-
             if (!P.active)
                 continue;
 
-            render.draw_vector(P.pos, P.v);
+            P.v.normalized(v_visualize);
+            render.draw_vector(P.pos, v_visualize);
+            // render.draw_vector(P.pos, P.v);
         }
     }
 

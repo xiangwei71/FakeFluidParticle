@@ -72,6 +72,8 @@ window.onload = () => {
         particle_pool.do_particle_update(dt);
         particle_pool.draw(render);
 
+        //render.draw_point(curl.pos, curl.R);
+
         window.requestAnimationFrame(update);
     };
 

@@ -1,5 +1,13 @@
 var Zero = new Vector(0, 0);
 
+//回傳介於-degree/2~degree/2之間的向量
+function get_random_vector(degree) {
+    var radian = degree * Math.PI / 180;
+    var r = Math.random() * radian - 0.5 * radian;
+
+    return new Vector(Math.cos(r), Math.sin(r));
+}
+
 function Vector(x, y) {
     this.x = x;
     this.y = y;
