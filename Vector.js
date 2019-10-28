@@ -9,17 +9,26 @@ function Vector(x, y) {
         this.y = y;
     }
 
+    this.copy = (v) => {
+        this.x = v.x;
+        this.y = v.y;
+    }
+
     this.multiply = (s) => {
         return new Vector(s * this.x, s * this.y);
     }
 
     this.normalized = (out) => {
-        var r = Math.sqrt(this.x * this.x + this.y * this.y);
+        var r = this.Len();
         if (r == 0) {
             out.set(Zero.x, Zero.y);
         }
 
         out.set(this.x / r, this.y / r);
+    }
+
+    this.Len = () => {
+        return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 }
 

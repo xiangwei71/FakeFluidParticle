@@ -1,18 +1,35 @@
-var particle_fade_rate = 0.1;
+var particle_fade_rate = 0.5;
 var particle_v_boost = 5;
+var particle_small_r = 0.1;
+var particel_init_pos = new Vector(-10, -10);
 
-function Particle(pos, v) {
-    this.pos = new Vector(pos.x, pos.y);
-    this.v = new Vector(v.x, v.y);
+function Particle(index) {
+    this.index = index;
+    this.pos = new Vector(particel_init_pos.x, particel_init_pos.y);
+    this.v = new Vector(0, 0);
+    this.active = false;
+
+    this.copy = (pos, v) => {
+        this.pos.copy(pos);
+        this.v.copy(v);
+    }
 
 
-    this.update = (dt) => {
+    this.update = (dt, pool) => {
         vector_add(this.pos, this.v.multiply(dt), this.pos);
 
         var active_rate = (1 - particle_fade_rate * dt);
         // drag
         this.v.x = this.v.x * active_rate;
         this.v.y = this.v.y * active_rate;
+
+        if (this.v.Len() < particle_small_r) {
+            pool.reset_p(this.index);
+        }
+    }
+
+    this.split = () => {
+
     }
 
     this.boundary_condition = (min_x, max_x, min_y, max_y) => {

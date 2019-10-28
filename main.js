@@ -5,7 +5,7 @@ function cordinate_remap(x, y, out_v) {
     out_v.set(v.x, -v.y);
 }
 
-var particles = [];
+
 var now_pos = new Vector(0, 0);
 var pre_pos = new Vector(0, 0);
 var diff = new Vector(0, 0);
@@ -33,8 +33,8 @@ function canvas_onmousemove(event) {
 
     // create particle by now_pos and diff
     diff.set(now_pos.x - pre_pos.x, now_pos.y - pre_pos.y);
-    var P = new Particle(now_pos, diff.multiply(particle_v_boost));
-    particles.push(P);
+    var P = particle_pool.get_p();
+    P.copy(now_pos, diff.multiply(particle_v_boost))
 
     // rest pre_pos
     pre_pos.set(now_pos.x, now_pos.y);
@@ -45,18 +45,12 @@ var cell_space = 40;
 var dx = 20, dy = 20;
 var w = 12, h = 12;
 var render;
-
-function do_particle_update(dt) {
-    for (var i = 0; i < particles.length; ++i) {
-        var P = particles[i];
-        P.update(dt);
-        P.boundary_condition(0, canvas.width - 1, 0, canvas.height - 1);
-    }
-    console.log(particles.length);
-}
+var particle_pool;
 
 var v_visualize = new Vector(0, 0);
 window.onload = () => {
+
+    particle_pool = new ParticlePool();
     render = new Render(canvas);
 
     var pre_time = new Date().getTime();
@@ -73,13 +67,8 @@ window.onload = () => {
         //清空畫布
         render.clear();
 
-        do_particle_update(dt);
-        for (var i = 0; i < particles.length; ++i) {
-            var P = particles[i];
-            // P.v.normalized(v_visualize);
-            // render.draw_vector(P.pos, v_visualize);
-            render.draw_vector(P.pos, P.v);
-        }
+        particle_pool.do_particle_update(dt);
+        particle_pool.draw(render);
 
         window.requestAnimationFrame(update);
     };
