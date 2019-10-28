@@ -56,7 +56,7 @@ function KDTree() {
     this.draw_node = (node, render, min_x, max_x, min_y, max_y) => {
         if (node.x_split) {
             var x = node.get_value();
-            render.draw_vector(new Vector(x, min_y), new Vector(0, max_y));
+            render.draw_vector(new Vector(x, min_y), new Vector(0, max_y - min_y));
 
             if (node.left_child)
                 this.draw_node(node.left_child, render, min_x, x, min_y, max_y);
@@ -65,7 +65,7 @@ function KDTree() {
                 this.draw_node(node.right_child, render, x, max_x, min_y, max_y);
         } else {
             var y = node.get_value();
-            render.draw_vector(new Vector(min_x, y), new Vector(max_x, 0));
+            render.draw_vector(new Vector(min_x, y), new Vector(max_x - min_x, 0));
 
             if (node.left_child)
                 this.draw_node(node.left_child, render, min_x, max_x, min_y, y);

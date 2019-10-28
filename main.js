@@ -54,7 +54,7 @@ window.onload = () => {
 
     //test KDTree
     var list = [];
-    for (var i = 0; i < 16; ++i)
+    for (var i = 0; i < 36; ++i)
         list.push(get_random_pos());
     var kd_tree = new KDTree();
     kd_tree.build(list, (a, b) => { return a.x - b.x; }, (a, b) => { return a.y - b.y; }, (E) => { return E.x; }, (E) => { return E.y; });
