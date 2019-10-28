@@ -1,3 +1,4 @@
+var v_visualize = new Vector(0, 0);
 
 function ParticlePool(max_count) {
     this.pool = new Pool(max_count, (index) => { return new Particle(index); });
@@ -25,6 +26,6 @@ function ParticlePool(max_count) {
             P.boundary_condition(0, canvas.width - 1, 0, canvas.height - 1);
         });
 
-        console.log(this.pool.active_count);
+        //console.log(this.pool.active_count);
     }
 }

@@ -1,4 +1,4 @@
-var curl = new CurlParticle();
+var curl = new CurlParticle(225, 160, 50, 50, -1);
 
 function complex_multiply(c1, c2) {
     var x = c1.x;
@@ -8,11 +8,11 @@ function complex_multiply(c1, c2) {
     return new Vector(a * x - b * y, a * y + b * x);
 }
 
-function CurlParticle() {
-    this.pos = new Vector(225, 160);
-    this.strength = 50;
-    this.R = 50;
-    this.rot = -1; //決定轉動的方向(1:逆時針)
+function CurlParticle(x, y, strength, R, rot) {
+    this.pos = new Vector(x, y);
+    this.strength = strength;
+    this.R = R;
+    this.rot = rot; //決定轉動的方向(1:逆時針)
 
     this.in_range = (p) => {
         var v = new Vector(this.pos.x - p.x, this.pos.y - p.y);

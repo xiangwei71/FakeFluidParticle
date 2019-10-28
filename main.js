@@ -5,7 +5,6 @@ function cordinate_remap(x, y, out_v) {
     out_v.set(v.x, -v.y);
 }
 
-
 var now_pos = new Vector(0, 0);
 var pre_pos = new Vector(0, 0);
 var diff = new Vector(0, 0);
@@ -21,7 +20,6 @@ function canvas_onmousedown(event) {
 function canvas_onmouseup(event) {
     moving = false;
 }
-
 
 function canvas_onmousemove(event) {
     if (!moving)
@@ -43,17 +41,23 @@ function canvas_onmousemove(event) {
 }
 
 //global variable
-var cell_space = 40;
-var dx = 20, dy = 20;
-var w = 12, h = 12;
 var render;
 var particle_pool;
 
-var v_visualize = new Vector(0, 0);
-window.onload = () => {
+function get_random_pos() {
+    return new Vector(Math.random() * canvas.width, Math.random() * canvas.height);
+}
 
-    particle_pool = new ParticlePool(3000);
+window.onload = () => {
     render = new Render(canvas);
+    particle_pool = new ParticlePool(3000);
+
+    //test KDTree
+    var list = [];
+    for (var i = 0; i < 16; ++i)
+        list.push(get_random_pos());
+    var kd_tree = new KDTree();
+    kd_tree.build(list, (a, b) => { return a.x - b.x; }, (a, b) => { return a.y - b.y; }, (E) => { return E.x; }, (E) => { return E.y; });
 
     var pre_time = new Date().getTime();
     var sum_time = 0;
@@ -73,6 +77,10 @@ window.onload = () => {
         particle_pool.draw(render);
 
         //render.draw_point(curl.pos, curl.R);
+        for (var i = 0; i < list.length; ++i)
+            render.draw_point(list[i], 2);
+
+        kd_tree.draw(render);
 
         window.requestAnimationFrame(update);
     };
