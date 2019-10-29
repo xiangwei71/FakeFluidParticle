@@ -88,7 +88,7 @@ function KDTree() {
 
     this.find_closest_node = (node, X, Y, is_near_callback) => {
         if (node == null) {
-            console.log("null");
+            // console.log("null");
             return false;
         }
 

@@ -11,7 +11,7 @@ var diff = new Vector(0, 0);
 var moving = false;
 
 var find_E = new Vector(-100, -100);
-//已知問題：滑鼠點擊和實際上有落差(會差右下)
+//已知問題：滑鼠點擊和實際上有落差(會偏向右下)
 var click_mark = new Vector(-100, -100);
 function canvas_onmousedown(event) {
     var x = event.clientX;
@@ -22,12 +22,11 @@ function canvas_onmousedown(event) {
 
     click_mark.copy(pre_pos);
     //測試KDTree find
-    kd_tree.find_closest(pre_pos.x, pre_pos.y, (E) => {
+    kd_tree.find_closest(pre_pos.x, pre_pos.y, (curl_P) => {
         var V = new Vector(0, 0);
-        vector_minus(pre_pos, E, V);
-        var find_it = (V.Len() < 10);
-        find_E = E;
-        console.log(find_it, V.Len(), E);
+        vector_minus(pre_pos, curl_P.pos, V);
+        var find_it = (V.Len() < curl_P.R);
+        find_E = curl_P.pos;
 
         return find_it;
     });
@@ -69,12 +68,16 @@ window.onload = () => {
     render = new Render(canvas);
     particle_pool = new ParticlePool(3000);
 
-    //test KDTree
+    //test KDTree(使用CurlParticle)
     var list = [];
-    for (var i = 0; i < 16; ++i)
-        list.push(get_random_pos());
+    for (var i = 0; i < 16; ++i) {
+        var p = get_random_pos();
+        var crul_P = new CurlParticle(p.x, p.y, Math.random() * 50, Math.random() * 40 + 10, Math.random() > 0.5 ? -1 : 1);
+        list.push(crul_P);
+    }
+
     kd_tree = new KDTree();
-    kd_tree.build(list, (a, b) => { return a.x - b.x; }, (a, b) => { return a.y - b.y; }, (E) => { return E.x; }, (E) => { return E.y; });
+    kd_tree.build(list, (a, b) => { return a.pos.x - b.pos.x; }, (a, b) => { return a.pos.y - b.pos.y; }, (E) => { return E.pos.x; }, (E) => { return E.pos.y; });
 
     var pre_time = new Date().getTime();
     var sum_time = 0;
@@ -95,7 +98,7 @@ window.onload = () => {
 
         //render.draw_point(curl.pos, curl.R);
         for (var i = 0; i < list.length; ++i)
-            render.draw_point(list[i], 2);
+            render.draw_point(list[i].pos, list[i].R);
 
         kd_tree.draw(render, canvas.width, canvas.height);
         render.draw_point(find_E, 10);
