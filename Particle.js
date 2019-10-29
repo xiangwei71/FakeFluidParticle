@@ -8,7 +8,6 @@ function Particle(index) {
     this.pos = new Vector(particel_init_pos.x, particel_init_pos.y);
     this.v = new Vector(0, 0);
     this.active = false;
-    this.curl = null;
     this.strength = 0;
 
     this.copy = (pos, v) => {
@@ -16,18 +15,20 @@ function Particle(index) {
         this.v.copy(v);
     }
 
-
     this.update = (dt, pool) => {
         // test if in curl
-        var in_curl = curl.in_range(this.pos);
-        if (in_curl) {
-            this.curl = curl;
+        var find_curl_P = null;
+        kd_tree.find_closest(this.pos.x, this.pos.y, (curl_P) => {
+            var in_curl = curl_P.in_range(this.pos);
+            if (in_curl)
+                find_curl_P = curl_P;
+
+            return in_curl;
+        });
+
+        if (find_curl_P != null) {
             this.strength = this.v.Len();
-        }
-
-
-        if (this.curl != null) {
-            this.curl.update_pos(this, dt);
+            find_curl_P.update_pos(this, dt);
         }
         else
             vector_add(this.pos, this.v.multiply(dt), this.pos);
