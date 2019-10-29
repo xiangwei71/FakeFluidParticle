@@ -70,9 +70,9 @@ window.onload = () => {
 
     //test KDTree(使用CurlParticle)
     var list = [];
-    for (var i = 0; i < 16; ++i) {
+    for (var i = 0; i < 100; ++i) {
         var p = get_random_pos();
-        var crul_P = new CurlParticle(p.x, p.y, Math.random() * 50, Math.random() * 40 + 10, Math.random() > 0.5 ? -1 : 1);
+        var crul_P = new CurlParticle(p.x, p.y, Math.random() * 50 + 45, Math.random() * 40 + 10, Math.random() > 0.5 ? -1 : 1);
         list.push(crul_P);
     }
 
@@ -97,8 +97,10 @@ window.onload = () => {
         particle_pool.draw(render);
 
         //render.draw_point(curl.pos, curl.R);
-        for (var i = 0; i < list.length; ++i)
-            render.draw_point(list[i].pos, list[i].R);
+
+        //畫curl Particle
+        // for (var i = 0; i < list.length; ++i)
+        //     render.draw_point(list[i].pos, list[i].R);
 
         kd_tree.draw(render, canvas.width, canvas.height);
         render.draw_point(find_E, 10);
