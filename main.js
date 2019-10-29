@@ -9,12 +9,28 @@ var now_pos = new Vector(0, 0);
 var pre_pos = new Vector(0, 0);
 var diff = new Vector(0, 0);
 var moving = false;
+
+var find_E = new Vector(-100, -100);
+//已知問題：滑鼠點擊和實際上有落差(會差右下)
+var click_mark = new Vector(-100, -100);
 function canvas_onmousedown(event) {
     var x = event.clientX;
     var y = event.clientY;
     cordinate_remap(x, y, pre_pos);
 
     moving = true;
+
+    click_mark.copy(pre_pos);
+    //測試KDTree find
+    kd_tree.find_closest(pre_pos.x, pre_pos.y, (E) => {
+        var V = new Vector(0, 0);
+        vector_minus(pre_pos, E, V);
+        var find_it = (V.Len() < 10);
+        find_E = E;
+        console.log(find_it, V.Len(), E);
+
+        return find_it;
+    });
 }
 
 function canvas_onmouseup(event) {
@@ -43,6 +59,7 @@ function canvas_onmousemove(event) {
 //global variable
 var render;
 var particle_pool;
+var kd_tree;
 
 function get_random_pos() {
     return new Vector(Math.random() * canvas.width, Math.random() * canvas.height);
@@ -54,9 +71,9 @@ window.onload = () => {
 
     //test KDTree
     var list = [];
-    for (var i = 0; i < 36; ++i)
+    for (var i = 0; i < 16; ++i)
         list.push(get_random_pos());
-    var kd_tree = new KDTree();
+    kd_tree = new KDTree();
     kd_tree.build(list, (a, b) => { return a.x - b.x; }, (a, b) => { return a.y - b.y; }, (E) => { return E.x; }, (E) => { return E.y; });
 
     var pre_time = new Date().getTime();
@@ -81,6 +98,8 @@ window.onload = () => {
             render.draw_point(list[i], 2);
 
         kd_tree.draw(render, canvas.width, canvas.height);
+        render.draw_point(find_E, 10);
+        render.draw_point(click_mark, 10);
 
         window.requestAnimationFrame(update);
     };

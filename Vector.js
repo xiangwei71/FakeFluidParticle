@@ -48,3 +48,8 @@ function vector_add(v, v2, result) {
     result.x = v.x + v2.x;
     result.y = v.y + v2.y;
 }
+
+function vector_minus(v, v2, result) {
+    result.x = v.x - v2.x;
+    result.y = v.y - v2.y;
+}

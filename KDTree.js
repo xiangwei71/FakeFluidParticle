@@ -32,7 +32,7 @@ function KDTree() {
 
         if (list.length == 1) {
             // console.log("one");
-            return KDTreeNode(list[0], this.x_split, this.x_split ? get_x_callback : get_y_callback);
+            return new KDTreeNode(list[0], this.x_split, this.x_split ? get_x_callback : get_y_callback);
         }
 
         //找出中間，分2堆
@@ -45,6 +45,7 @@ function KDTree() {
 
         var index = Math.floor(list.length / 2);
         var node = new KDTreeNode(list[index], this.x_split, this.x_split ? get_x_callback : get_y_callback);
+        // console.log(index);
 
         this.x_split = !this.x_split;
         node.left_child = this.split(list.slice(0, index), sort_x_callback, sort_y_callback, get_x_callback, get_y_callback);
@@ -56,7 +57,8 @@ function KDTree() {
     this.draw_node = (node, render, min_x, max_x, min_y, max_y) => {
         if (node.x_split) {
             var x = node.get_value();
-            render.draw_vector(new Vector(x, min_y), new Vector(0, max_y - min_y));
+            if (node.left_child || node.right_child)
+                render.draw_vector(new Vector(x, min_y), new Vector(0, max_y - min_y));
 
             if (node.left_child)
                 this.draw_node(node.left_child, render, min_x, x, min_y, max_y);
@@ -65,7 +67,8 @@ function KDTree() {
                 this.draw_node(node.right_child, render, x, max_x, min_y, max_y);
         } else {
             var y = node.get_value();
-            render.draw_vector(new Vector(min_x, y), new Vector(max_x - min_x, 0));
+            if (node.left_child || node.right_child)
+                render.draw_vector(new Vector(min_x, y), new Vector(max_x - min_x, 0));
 
             if (node.left_child)
                 this.draw_node(node.left_child, render, min_x, max_x, min_y, y);
@@ -77,5 +80,33 @@ function KDTree() {
 
     this.draw = (render, w, h) => {
         this.draw_node(this.node, render, 0, w, 0, h);
+    }
+
+    this.find_closest = (X, Y, is_near_callback) => {
+        return this.find_closest_node(this.node, X, Y, is_near_callback);
+    }
+
+    this.find_closest_node = (node, X, Y, is_near_callback) => {
+        if (node == null) {
+            console.log("null");
+            return false;
+        }
+
+        if (is_near_callback(node.element))
+            return true;
+
+        if (node.x_split) {
+            var x = node.get_value();
+            if (X < x)
+                return this.find_closest_node(node.left_child, X, Y, is_near_callback);
+            else
+                return this.find_closest_node(node.right_child, X, Y, is_near_callback);
+        } else {
+            var y = node.get_value();
+            if (Y < y)
+                return this.find_closest_node(node.left_child, X, Y, is_near_callback);
+            else
+                return this.find_closest_node(node.right_child, X, Y, is_near_callback);
+        }
     }
 }
